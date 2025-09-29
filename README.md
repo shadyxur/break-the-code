@@ -9,7 +9,7 @@
 
 ## 1. Introduction
 
-This report describes the cryptanalysis of SC-1, a simple 64-bit block cipher using 64-bit keys. The objective was to recover the encryption key given a single known plaintext-ciphertext pair. Through analysis of the cipher's design, I successfully identified critical vulnerabilities that allowed complete key recovery.
+This report describes the cryptanalysis of a simple 64-bit block cipher using 64-bit keys. The objective was to recover the encryption key given a single known plaintext-ciphertext pair. Through analysis of the cipher's design, I successfully identified critical vulnerabilities that allowed complete key recovery.
 
 **Given Information:**
 - Plaintext: `F5EF5D981B5DB510`
@@ -20,7 +20,7 @@ This report describes the cryptanalysis of SC-1, a simple 64-bit block cipher us
 
 ## 2. Understanding the Cipher
 
-SC-1 operates on 64-bit blocks (8 bytes) with a 64-bit key through three sequential operations:
+The cipher operates on 64-bit blocks (8 bytes) with a 64-bit key through three sequential operations:
 
 ### Step 1: XOR with Key
 The plaintext P is XORed with the key K to produce intermediate value D:
@@ -48,7 +48,7 @@ C0 = SBox[E0], C1 = SBox[E1], ..., C7 = SBox[E7]
 
 ## 3. Vulnerability Analysis
 
-SC-1 contains several critical vulnerabilities that make it insecure:
+The cipher contains several critical vulnerabilities that make it insecure:
 
 ### 3.1 Invertibility
 All three operations in SC-1 are completely reversible:
@@ -110,7 +110,7 @@ K = AF629729682314C9
 
 ## 5. Implementation
 
-The attack was implemented in Python to automate the key recovery process. The implementation includes command-line interface support, input validation, and verification logic.
+The attack is implemented in Python to automate the key recovery process. The implementation includes command-line interface support, input validation, and verification logic.
 
 ### Core Algorithm
 The main cipher-breaking function implements the three-step reversal process:
@@ -167,14 +167,6 @@ def rotate_bits(bits, amount, direction='right'):
         return bits[split_point:] + bits[:split_point]
 ```
 
-### Program Features
-The implementation provides:
-- **Command-line interface** for easy execution with custom inputs
-- **Automatic verification** that encrypts plaintext with recovered key
-- **Input validation** ensuring proper hex format (16 digits)
-- **Quiet mode** for scripting and automation
-- **Detailed step-by-step output** showing intermediate values
-
 ### Execution
 The program can be run in multiple ways.
 
@@ -202,73 +194,6 @@ python3 codeBreak.py -p F5EF5D981B5DB510 -c 2AAA8E541A37D5AF -q
 ```
 
 When executed with the given plaintext-ciphertext pair, the program successfully recovers the key in under 0.01 seconds.
-
----
-
-## 6. Results and Verification
-
-### 6.1 Key Recovery
-The recovered key is:
-```
-Key: AF629729682314C9
-```
-
-### 6.2 Step-by-Step Results
-
-| Step | Operation | Input | Output |
-|------|-----------|-------|--------|
-| 0 | Given | Ciphertext | `2AAA8E541A37D5AF` |
-| 1 | Inverse S-Box | `2AAA8E541A37D5AF` | `9562E6FD43B2B51B` |
-| 2 | Reverse Rotation | `9562E6FD43B2B51B` | `5A8DCAB1737EA1D9` |
-| 3 | XOR with Plaintext | `5A8DCAB1737EA1D9` | `AF629729682314C9` |
-
-### 6.3 Verification
-To verify correctness, I encrypted the plaintext using the recovered key:
-
-**Forward Encryption:**
-1. D = P ⊕ K = `F5EF5D981B5DB510` ⊕ `AF629729682314C9` = `5A8DCAB1737EA1D9`
-2. E = D « 17 = `9562E6FD43B2B51B`
-3. C = SBox[E] = `2AAA8E541A37D5AF`
-
-**Verification Result:** **Success**
-
-The encrypted result matches the given ciphertext exactly, confirming that the key `AF629729682314C9` is correct.
-
----
-
-## 7. Conclusion
-
-Weak cipher is fundamentally insecure due to several design flaws:
-
-### 7.1 Critical Weaknesses
-1. **All operations are reversible**: The cipher can be completely inverted with knowledge of the algorithm
-2. **Single round provides no security**: One pass through XOR, rotation, and S-Box is insufficient
-3. **Known plaintext attack**: A single plaintext-ciphertext pair reveals the entire key
-4. **No key scheduling**: The same key is used directly without any key expansion or scheduling
-
-### 7.2 Lessons Learned
-This exercise demonstrates why modern ciphers employ:
-- **Multiple rounds** (e.g., AES uses 10-14 rounds)
-- **Complex key schedules** that derive different round keys
-- **Non-linear transformations** that resist differential and linear cryptanalysis
-- **Avalanche effect** where small changes in input cause large changes in output
-
-The successful cryptanalysis of SC-1 reinforces the importance of these security principles in cipher design. A secure cipher must ensure that even with knowledge of the algorithm and several plaintext-ciphertext pairs, recovering the key should be computationally infeasible.
-
-### 7.3 Time Complexity
-The attack has time complexity of O(1) relative to the key space, as it directly computes the key rather than searching for it. This is in stark contrast to a secure cipher where brute force would require O(2^n) operations for an n-bit key.
-
----
-
-## 8. Answer to the Question
-
-**What is the key used in the encryption?**
-
-```
-Key: AF629729682314C9
-```
-
-This key was recovered by reversing the cipher operations (inverse S-Box, reverse rotation, and XOR) and has been verified to produce the correct ciphertext when used to encrypt the given plaintext.
 
 ---
 

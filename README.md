@@ -272,19 +272,6 @@ This key was recovered by reversing the cipher operations (inverse S-Box, revers
 
 ---
 
-## Appendix: Code Submission
-
-The complete implementation is available on GitHub with comprehensive documentation:
-
-**Repository:** https://github.com/shadyxur/break-the-code
-
-The repository includes:
-- Complete Python implementation (`codeBreak.py`)
-- Detailed README with usage instructions for Windows and Linux/macOS
-- Command-line interface documentation
-- Example scripts for automation
-- Troubleshooting guide
-
 ### Quick Access
 
 Clone and run:

@@ -1,4 +1,4 @@
-# CSCI 7954 Project 1: Breaking the SC-1 Cipher
+# CSCI 7954 Weak cipher Lab
 
 **Student Name:** Dmitri Kharchevnikov  
 **Course:** CSCI 7954 - Advanced Topics in Cybersecurity  
@@ -18,7 +18,7 @@ This report describes the cryptanalysis of SC-1, a simple 64-bit block cipher us
 
 ---
 
-## 2. Understanding the SC-1 Cipher
+## 2. Understanding the Cipher
 
 SC-1 operates on 64-bit blocks (8 bytes) with a 64-bit key through three sequential operations:
 
@@ -176,9 +176,10 @@ The implementation provides:
 - **Detailed step-by-step output** showing intermediate values
 
 ### Execution
-The program can be run in multiple ways:
+The program can be run in multiple ways.
 
-```bash
+**Windows PowerShell:**
+```powershell
 # Use built-in sample data
 python codeBreak.py
 
@@ -187,6 +188,17 @@ python codeBreak.py -p F5EF5D981B5DB510 -c 2AAA8E541A37D5AF
 
 # Quiet mode (output key only)
 python codeBreak.py -p F5EF5D981B5DB510 -c 2AAA8E541A37D5AF -q
+```
+**Linux/macOS (bash):**
+```bash
+# Use built-in sample data
+python3 codeBreak.py
+
+# Provide custom plaintext and ciphertext
+python3 codeBreak.py -p F5EF5D981B5DB510 -c 2AAA8E541A37D5AF
+
+# Quiet mode (output key only)
+python3 codeBreak.py -p F5EF5D981B5DB510 -c 2AAA8E541A37D5AF -q
 ```
 
 When executed with the given plaintext-ciphertext pair, the program successfully recovers the key in under 0.01 seconds.
@@ -218,7 +230,7 @@ To verify correctness, I encrypted the plaintext using the recovered key:
 2. E = D « 17 = `9562E6FD43B2B51B`
 3. C = SBox[E] = `2AAA8E541A37D5AF`
 
-**Verification Result:** ✓ **Success**
+**Verification Result:** **Success**
 
 The encrypted result matches the given ciphertext exactly, confirming that the key `AF629729682314C9` is correct.
 
@@ -226,7 +238,7 @@ The encrypted result matches the given ciphertext exactly, confirming that the k
 
 ## 7. Conclusion
 
-SC-1 is fundamentally insecure due to several design flaws:
+Weak cipher is fundamentally insecure due to several design flaws:
 
 ### 7.1 Critical Weaknesses
 1. **All operations are reversible**: The cipher can be completely inverted with knowledge of the algorithm
@@ -291,7 +303,6 @@ cd break-the-code
 python codeBreak.py
 ```
 
-The repository demonstrates professional software development practices including version control, comprehensive documentation, and cross-platform compatibility.
 
 ---
 
